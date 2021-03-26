@@ -1,4 +1,4 @@
-const dotenv= require ('dotenv');//utilisation de variables pour masquées les données sensibles
+const dotenv= require ('dotenv');//utilisation de variables pour masquées les données sensibles (le plus tôt possible)
 dotenv.config();
 const express = require('express');
 const bodyParser = require('body-parser');

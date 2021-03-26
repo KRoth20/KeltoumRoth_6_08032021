@@ -2,7 +2,8 @@ const Sauce = require ('../models/Sauce'); //utiliser le modèle Sauce
 const fs = require('fs');//file systeme
 const validator = require ('validator'); //empêcher les caractères spéciaux $ et = dans les champs de saisie
 
-//POST//
+//POST//Capture et enregistre l'image, analyse la sauce en utilisant une chaîne de caractères et l'enregistre dans la base de données, en définissant correctement son image URL. Remet les sauces aimées et celles détestées à 0, et les sauces usersliked et celles usersdisliked aux tableaux vides.
+
 exports.createSauce = (req, res, next) => {
   let createOk = true;
   const sauceObject = JSON.parse(req.body.sauce);//pour extraire l'objet json de sauce
@@ -32,7 +33,8 @@ exports.createSauce = (req, res, next) => {
   }
 };
 
-//PUT // 
+//PUT // Met à jour la sauce avec l'identifiant fourni. Si une image est téléchargée, capturez-la et mettez à jour l'image URL des sauces. Si aucun fichier n'est fourni, les détails de la sauce figurent directement dans le corps de la demande (req.body.name, req.body.heat etc). Si un fichier est fourni, la sauce avec chaîne est en req.body.sauce.
+
 exports.modifySauce = (req, res, next) => {
   let createOk = true;
   if (req.file) {
@@ -68,7 +70,7 @@ exports.modifySauce = (req, res, next) => {
   }
 };
 
-//DELETE//
+//DELETE//Supprime la sauce avec l'ID fourni.
 exports.deleteSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
@@ -83,7 +85,7 @@ exports.deleteSauce = (req, res, next) => {
 };
 
 //GET//
-exports.getOneSauce = (req, res, next) => { //affiche une sauce en gros plan
+exports.getOneSauce = (req, res, next) => { //Renvoie la sauce avec l'ID fourni
     Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
           res.status(200).json(sauce)
@@ -91,7 +93,7 @@ exports.getOneSauce = (req, res, next) => { //affiche une sauce en gros plan
         .catch(error => res.status(404).json({ error }));
 };
 
-exports.getAllSauce =  (req, res, next) => { //affiche toutes les sauces
+exports.getAllSauce =  (req, res, next) => { //Renvoie le tableau de toutes les sauces dans la base de données
     Sauce.find()
         .then((sauces) => {
           res.status(200).json(sauces)
@@ -99,7 +101,7 @@ exports.getAllSauce =  (req, res, next) => { //affiche toutes les sauces
         .catch(error => res.status(400).json({ error }));
 };
 
-exports.likeSauce = (req, res, next) => { //permet de liker ou disliker
+exports.likeSauce = (req, res, next) => { //Définit le statut "j'aime" pour userID fourni. Si j'aime = 1, l'utilisateur aime la sauce. Si j'aime = 0, l'utilisateur annule ce qu'il aime ou ce qu'il n'aime pas. Si j'aime = -1, l'utilisateur n'aime pas la sauce. L'identifiant de l'utilisateur doit être ajouté ou supprimé du tableau approprié, en gardant une trace de ses préférences et en l'empêchant d'aimer ou de ne pas aimer la même sauce plusieurs fois. Nombre total de "j'aime" et de "je n'aime pas" à mettre à jour avec chaque "j'aime".
   const userId = req.body.userId;
   if (req.body.like === -1) { //disliked
     const userId = req.body.userId;
